@@ -31,7 +31,7 @@ call_analytics/
 ├── requirements.txt        # Python dependencies
 ├── db.sqlite3              # Local DB
 ├── .env                    # Environment file for secrets
-```
+
 
 ---
 
