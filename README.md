@@ -1,6 +1,3 @@
-Here you go, Vasanth! Here's a clean, beginner-friendly **README.md** for your `call_analytics` project, written in an engaging tone with structured sections.
-
----
 
 ```markdown
 # 📞 Call Analytics with LLMs using Django
