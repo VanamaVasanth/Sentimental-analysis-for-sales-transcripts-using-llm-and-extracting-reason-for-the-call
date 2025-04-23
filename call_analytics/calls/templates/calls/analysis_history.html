@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis History</title>
+</head>
+<body>
+    <h1>Sentiment Analysis History</h1>
+
+    <div>
+        <a href="/call_analytics/form/">← Back to Analyzer</a> |
+        <a href="/call_analytics/export/csv/">📥 Export CSV</a> |
+        <a href="/call_analytics/export/pdf/">📄 Export PDF</a>
+    </div>
+
+    <form method="get" style="margin-top: 20px;">
+        <label>Sentiment:
+            <select name="sentiment">
+                <option value="">All</option>
+                <option value="Positive">Positive</option>
+                <option value="Neutral">Neutral</option>
+                <option value="Negative">Negative</option>
+            </select>
+        </label>
+        <label>From: <input type="date" name="from"></label>
+        <label>To: <input type="date" name="to"></label>
+        <label>Search:
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search text or reason">
+        </label>
+        <button type="submit">Filter</button>
+    </form>
+    
+
+    <table border="1" cellpadding="6" cellspacing="0" style="margin-top: 20px; width: 100%;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Sentiment</th>
+                <th>Score</th>
+                <th>Reason</th>
+                <th>Sentences</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.created_at|date:"Y-m-d H:i" }}</td>
+                <td>{{ entry.overall_sentiment }}</td>
+                <td>{{ entry.satisfaction_score }}</td>
+                <td>{{ entry.reason_for_call }}</td>
+                <td>
+                    <details>
+                        <summary>View</summary>
+                        <ul>
+                            {% for s in entry.sentence_sentiments %}
+                            <li><strong>{{ s.sentence }}</strong>: {{ s.sentiment }}</li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if entries.has_other_pages %}
+    <div style="margin-top: 20px;">
+        {% if entries.has_previous %}
+            <a href="?page={{ entries.previous_page_number }}">&laquo; Previous</a>
+        {% endif %}
+        Page {{ entries.number }} of {{ entries.paginator.num_pages }}
+        {% if entries.has_next %}
+            <a href="?page={{ entries.next_page_number }}">Next &raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>

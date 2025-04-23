@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auto Response with PDF Knowledge</title>
+</head>
+<body>
+    <h1>📄 RAG Auto Response System</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="text" rows="6" cols="100" placeholder="Paste customer query, review, or transcript...">{{ request.POST.text }}</textarea><br><br>
+        <button type="submit">Generate Response</button>
+    </form>
+
+    <hr>
+
+    {% if answer %}
+        <h3>🧠 Answer:</h3>
+        <p>{{ answer }}</p>
+
+        <h4>📚 Retrieved From:</h4>
+        <ul>
+            {% for src in sources %}
+                <li>{{ src }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

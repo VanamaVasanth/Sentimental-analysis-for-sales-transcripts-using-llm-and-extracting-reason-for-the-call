@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analyzer</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .toggle-buttons {
+            margin-bottom: 10px;
+        }
+        .hidden { display: none; }
+        textarea { width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Analyze Customer Text</h1>
+
+    <div class="toggle-buttons">
+        <button type="button" onclick="toggleForm('review')">📝 Review</button>
+        <button type="button" onclick="toggleForm('transcript')">📞 Transcript</button>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div id="review-form">
+            <h3>Customer Review</h3>
+            <textarea name="text" rows="8" placeholder="Paste a customer review...">{{ request.POST.text }}</textarea>
+        </div>
+
+        <div id="transcript-form" class="hidden">
+            <h3>Sales Transcript</h3>
+            <textarea name="text" rows="8" placeholder="Paste a sales call transcript...">{{ request.POST.text }}</textarea>
+        </div>
+
+        <br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    <script>
+        function toggleForm(type) {
+            document.getElementById("review-form").classList.add("hidden");
+            document.getElementById("transcript-form").classList.add("hidden");
+            document.getElementById(type + "-form").classList.remove("hidden");
+        }
+    </script>
+
+    <hr>
+
+    {% if result %}
+        <h2>Analysis Result (JSON)</h2>
+        <pre>{{ result|safe }}</pre>
+
+        <h2>Sentiment Visualization</h2>
+        <canvas id="sentimentChart" width="800" height="300"></canvas>
+        <script>
+            const data = {{ result|safe }};
+            const labels = data.sentence_sentiments.map(s => s.sentence.slice(0, 40) + '...');
+            const values = data.sentence_sentiments.map(s => {
+                if (s.sentiment === "Positive") return 1;
+                if (s.sentiment === "Neutral") return 0;
+                return -1;
+            });
+
+            const ctx = document.getElementById("sentimentChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Sentiment (1=Positive, 0=Neutral, -1=Negative)",
+                        data: values,
+                        backgroundColor: values.map(v =>
+                            v === 1 ? "green" : v === 0 ? "gray" : "red"
+                        )
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    if (value === 1) return 'Positive';
+                                    if (value === 0) return 'Neutral';
+                                    if (value === -1) return 'Negative';
+                                    return value;
+                                }
+                            },
+                            suggestedMin: -1,
+                            suggestedMax: 1
+                        }
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+
+    <br><br>
+    <a href="/call_analytics/history/">📊 View History</a> |
+    <a href="/call_analytics/dashboard/">📈 Dashboard</a>
+</body>
+</html>

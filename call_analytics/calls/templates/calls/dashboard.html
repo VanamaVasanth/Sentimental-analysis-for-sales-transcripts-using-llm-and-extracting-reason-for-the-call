@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>📈 Sentiment Dashboard</h1>
+    <div>
+        <a href="/call_analytics/form/">← Back to Analyzer</a> |
+        <a href="/call_analytics/history/">📊 View History</a>
+    </div>
+
+    <br><br>
+
+    <canvas id="sentimentPie" width="400" height="400"></canvas>
+    <script>
+        const data = {{ sentiment_data|safe }};
+
+        const ctx = document.getElementById("sentimentPie").getContext("2d");
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Positive', 'Neutral', 'Negative'],
+                datasets: [{
+                    data: [data.Positive, data.Neutral, data.Negative],
+                    backgroundColor: ['green', 'gray', 'red']
+                }]
+            },
+            options: {
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Sentence-Level Sentiment Distribution'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
