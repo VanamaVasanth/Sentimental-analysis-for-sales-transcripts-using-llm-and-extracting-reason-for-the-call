@@ -1,6 +1,4 @@
-
-```markdown
-📞 Call Analytics with LLMs using Django
+Call Analytics with LLMs using Django
 
 Welcome to **Call Analytics**, a Django-based project that leverages **Large Language Models (LLMs)** and sentiment analysis to understand **why customers are calling** — even when there's **no review**! If there's a review, we skip the call transcript — smart and efficient. 😎
 
@@ -20,7 +18,7 @@ It’s like giving your customer service team a superpower. ⚡
 
 ## 🏗️ Project Structure
 
-```
+
 call_analytics/
 ├── call_analytics/         # Main project folder (settings, routing)
 ├── calls/                  # Django app for handling call analysis
